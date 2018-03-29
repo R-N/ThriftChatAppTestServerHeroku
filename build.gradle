@@ -1,0 +1,52 @@
+plugins {
+  id "io.ratpack.ratpack-groovy" version "1.4.5"
+}
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+mainClassName = "Main"
+
+configurations {
+    javaAgent
+}
+
+dependencies {
+    ['armeria',
+     'armeria-grpc',
+     'armeria-jetty',
+     'armeria-kafka',
+     'armeria-logback',
+     'armeria-retrofit2',
+     'armeria-thrift',
+     'armeria-tomcat',
+     'armeria-zipkin',
+     'armeria-zookeeper'].each {
+        compile "com.linecorp.armeria:${it}:0.53.2"
+    }
+
+    // Logging
+    runtime 'ch.qos.logback:logback-classic:1.2.3'
+    runtime 'org.slf4j:log4j-over-slf4j:1.7.25'
+    runtime "org.slf4j:slf4j-simple:1.7.12"
+    //compile "postgresql:postgresql:42.1.4"
+    compile "com.heroku.sdk:heroku-jdbc:0.1.1"
+    compile "org.apache.commons:commons-dbcp2:2.1.1"
+    compile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.7'
+    compile "io.netty:netty-all:4.1.16.Final"
+    compile "org.postgresql:postgresql:9.4-1201-jdbc4"
+    testCompile 'junit:junit:4.11'
+}
+
+// Require Java 8 to build the project.
+tasks.withType(JavaCompile) {
+    sourceCompatibility '1.8'
+    targetCompatibility '1.8'
+}
+task stage {
+  dependsOn installDist
+}
